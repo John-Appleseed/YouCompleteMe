@@ -68,7 +68,7 @@ function! youcompleteme#Enable()
   augroup youcompleteme
     autocmd!
     autocmd CursorMovedI * call s:OnCursorMovedInsertMode()
-    autocmd CursorMoved * call s:OnCursorMovedNormalMode()
+	autocmd CursorMoved * call s:OnCursorMovedNormalMode() " Slows down buffer switching
     " Note that these events will NOT trigger for the file vim is started with;
     " so if you do "vim foo.cc", these events will not trigger when that buffer
     " is read. This is because youcompleteme#Enable() is called on VimEnter and
@@ -77,7 +77,8 @@ function! youcompleteme#Enable()
     " We also need to trigger buf init code on the FileType event because when
     " the user does :enew and then :set ft=something, we need to run buf init
     " code again.
-    autocmd BufRead,BufEnter,FileType * call s:OnBufferVisit()
+    "autocmd BufRead,BufEnter,FileType * call s:OnBufferVisit() " Slows down buffer switching
+    autocmd CursorHold * call s:OnBufferVisit() " Vim doesn't have any internal background commands. CursorHold solves the user latency experience
     autocmd BufUnload * call s:OnBufferUnload( expand( '<afile>:p' ) )
     autocmd CursorHold,CursorHoldI * call s:OnCursorHold()
     autocmd InsertLeave * call s:OnInsertLeave()
